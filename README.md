@@ -10,7 +10,7 @@ gasket - Hardware accelerated, cloud-native transcoder
 ### [Read more on the website](https://gskt.dev)
 
 ## Overview
-Gasket is a software project aiming to simplify the process of transcoding live streams in Kubernetes. It is the result of a thesis project and is currently in the early stages of development. The project is being developed by [Pierre Le Fevre](https://github.com/pierrelefevre).
+gasket is a software project aiming to simplify the process of transcoding live streams in Kubernetes. It is the result of a thesis project and is currently in the early stages of development. The project is being developed by [Pierre Le Fevre](https://github.com/pierrelefevre).
 
 <img src="./docs/src/architecture-diagram.svg" alt="gasket architecture diagram" class="py-10 w-full" />
 
