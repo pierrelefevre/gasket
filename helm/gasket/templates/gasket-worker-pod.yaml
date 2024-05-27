@@ -1,0 +1,79 @@
+{{- range $v := .Values.nodes  }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
+  namespace: {{ $.Values.namespace.name }}
+  labels:
+    app: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
+    date: "{{ now | unixEpoch }}"
+spec:
+  nodeName: {{ $v.hostname }}
+  hostNetwork: true
+  restartPolicy: Always
+  imagePullSecrets:
+    - name: docker-hub-secret
+  containers:
+    - name: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
+      # When using GPU/CPU transcoding, use tag: latest
+      # AMD Xilinx Alveo U30 support via tag: u30
+      image: "{{ if and ($v.device) (eq $v.device.type "quadra") }}pierrelefevreneti/quadra:gasket{{ else }}{{ $.Values.worker.image.repository }}:{{ if and ($v.device) (eq $v.device.type "u30") }}u30{{ else }}latest{{ end }}{{ end }}"      
+      imagePullPolicy: Always
+      ports:
+        - name: http-webserver
+          containerPort: 8080
+          protocol: TCP
+      resources:
+        limits:
+          {{- if $v.device }}
+            {{- if eq $v.device.type "nvidia" }}
+          nvidia.com/gpu: "{{ $v.device.count }}"
+            {{- end }}
+            {{- if eq $v.device.type "u30" }}
+          amd.com/ama_u30: "{{ $v.device.count }}"
+            {{- end }}
+            {{- if eq $v.device.type "quadra" }}
+          netint.ca/Quadra: "{{ $v.device.count }}"
+            {{- end }}
+          {{- end }}
+          cpu: "{{ $.Values.worker.resource.limits.cpu }}"
+          memory: "{{ $.Values.worker.resource.limits.memory }}"
+          ephemeral-storage: "10Gi"
+        requests:
+          {{- if $v.device }}
+            {{- if eq $v.device.type "nvidia" }}
+          nvidia.com/gpu: "{{ $v.device.count }}"
+            {{- end }}
+            {{- if eq $v.device.type "u30" }}
+          amd.com/ama_u30: "{{ $v.device.count }}"
+            {{- end }}
+            {{- if eq $v.device.type "quadra" }}
+          netint.ca/Quadra: "{{ $v.device.count }}"
+            {{- end }}
+          {{- end }}
+          cpu: "{{ $.Values.worker.resource.requests.cpu }}"
+          memory: "{{ $.Values.worker.resource.requests.memory }}"
+          ephemeral-storage: "10Gi"
+      env:
+        {{- if and ($v.device) (eq $v.device.type "nvidia") }}
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "all"
+        {{- end }}
+        {{- if not $v.device }}
+        - name: CPU_ONLY
+          value: "true"
+        {{- end }}
+      livenessProbe:
+        httpGet:
+          path: /livez
+          port: http-webserver
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      readinessProbe:
+        httpGet:
+          path: /readyz
+          port: http-webserver
+        initialDelaySeconds: 5
+        periodSeconds: 5
+---
+{{- end }}

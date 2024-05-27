@@ -1,0 +1,25 @@
+{{- if .Values.lb.storage.pv.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.lb.name }}-pv
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    type: {{ .Values.lb.storage.pv.storageClassName }}
+spec:
+  storageClassName: {{ .Values.lb.storage.pv.storageClassName }}
+  capacity:
+    storage: {{ .Values.lb.storage.pv.size }}
+  accessModes: 
+    - ReadWriteOnce
+  local:
+    path: {{ .Values.lb.storage.pv.node.path }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ .Values.lb.storage.pv.node.hostname }}
+{{- end }}

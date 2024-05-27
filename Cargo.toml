@@ -1,0 +1,7 @@
+# Enable rust-analyzer for both gasket and gasket-lb
+
+[workspace]
+
+resolver = "2"
+
+members = ["gasket", "gasket-lb"]

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.gui.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  replicas: {{ .Values.gui.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.gui.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.gui.name }}
+        date: "{{ now | unixEpoch }}"
+    spec:
+      containers:
+      - name: {{ .Values.gui.name }}
+        image: "{{ .Values.gui.deployment.image.repository }}:{{ .Values.gui.deployment.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+          - name: http-webserver
+            containerPort: 8080
+            protocol: TCP
+        resources: 
+          limits:
+            cpu: {{ .Values.gui.deployment.resources.limits.cpu }}
+            memory: {{ .Values.gui.deployment.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.gui.deployment.resources.requests.cpu }}
+            memory: {{ .Values.gui.deployment.resources.requests.memory }}
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: http-webserver
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webserver
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        env:
+          {{- if .Values.gui.deployment.lbEndpoint }}
+          - name: VITE_API_URL
+            value: "{{ .Values.gui.deployment.lbEndpoint }}"
+          {{- end }}

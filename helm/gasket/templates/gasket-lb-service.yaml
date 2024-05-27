@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.lb.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Values.lb.name }}
+spec:
+  type: {{ .Values.lb.service.type }}
+  ports:
+    - name: http-webserver
+      port: 80
+      targetPort: 8888
+      protocol: TCP
+      {{- if .Values.lb.service.nodePort }}
+      nodePort: {{ .Values.lb.service.nodePort }}
+      {{- end }}
+  selector:
+    app: {{ .Values.lb.name }}

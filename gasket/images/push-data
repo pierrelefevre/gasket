@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Push public domain/royalty free sample videos to the web server
+# Make sure to run this script from the gasket directory 
+
+docker build -f ./images/data/data.Dockerfile --platform linux/amd64 -t pierrelefevreneti/gasket-data .
+docker push pierrelefevreneti/gasket-data

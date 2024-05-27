@@ -1,0 +1,19 @@
+{{- range $v := .Values.nodes  }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
+  namespace: {{ $.Values.namespace.name }}
+  labels:
+    app: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
+spec:
+  type: ClusterIP
+  selector:
+    app: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
+  ports:
+    - name: http-webserver
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+---
+{{- end }}

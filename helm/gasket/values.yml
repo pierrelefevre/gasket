@@ -1,0 +1,109 @@
+# gasket helm chart values
+
+# add all nodes here
+nodes:
+  - device:
+      # hwaccel device
+      count: <device_count_1>
+      type: <device_type_1>
+    displayName: <display_name_1>
+    hostname: <hostname_1>
+    publicIp: <public_ip_1>
+
+# namespace to install gasket in
+namespace:
+  name: gasket
+
+# worker pods
+worker:
+  name: gasket-worker
+
+  image:
+    repository: pierrelefevreneti/gasket
+    tag: latest
+
+  # give it as much resources as you can (limit so other processes don't crash)
+  resource:
+    limits:
+      cpu: "<worker_cpu_limits>"
+      memory: "<worker_memory_limits>"
+    requests:
+      cpu: "<worker_cpu_requests>"
+      memory: "<worker_memory_requests>"
+
+# lb deployment
+lb:
+  name: gasket-lb
+
+  # ClusterIP or LoadBalancer
+  service:
+    type: <lb_service_type>
+
+  # use ingess?
+  ingress:
+    enabled: <lb_ingress_enabled> #true/false
+    alb: <lb_ingress_alb> #true creates alb, false creates nginx
+
+  # storage for lb state file (disable for ephemeral storage)
+  storage:
+    pv:
+      enabled: <lb_storage_pv_enabled> #true/false
+      storageClassName: <lb_storage_pv_storageClassName>
+      size: <lb_storage_pv_size>
+      node:
+        hostname: <lb_storage_pv_node_hostname>
+        path: <lb_storage_pv_node_path>
+    pvc:
+      enabled: <lb_storage_pvc_enabled> #true/false
+      storageClassName: <lb_storage_pvc_storageClassName>
+      size: <lb_storage_pvc_size>
+
+
+  deployment:
+    replicas: 1 # cannot be scaled
+    image:
+      repository: pierrelefevreneti/gasket-lb
+      tag: latest
+    resources:
+      # runs well on about 50m cpu and 256Mi memory
+      limits:
+        cpu: "<lb_deployment_cpu_limits>"
+        memory: "<lb_deployment_memory_limits>"
+      requests:
+        cpu: "<lb_deployment_cpu_requests>"
+        memory: "<lb_deployment_memory_requests>"
+    env:
+      stateFile: "/mnt/data/state.json"
+    volume:
+      mountPath: "/mnt/data"
+
+# gui deployment
+gui:
+  name: gasket-gui
+
+  # ClusterIP or LoadBalancer
+  service:
+    type: <gui_service_type>
+
+  # use ingess?
+  ingress:
+    enabled: <lb_ingress_enabled> #true/false
+    alb: <lb_ingress_alb> #true creates alb, false creates nginx
+
+  deployment:
+    replicas: 1 # can be scaled, probably no need though
+    image:
+      repository: pierrelefevreneti/gasket-gui
+      tag: latest
+      
+    # tiny nginx server, 50m cpu and 256Mi memory is plenty
+    resources:
+      limits:
+        cpu: "<gui_deployment_cpu_limits>"
+        memory: "<gui_deployment_memory_limits>"
+      requests:
+        cpu: "<gui_deployment_cpu_requests>"
+        memory: "<gui_deployment_memory_requests>"
+
+    # set the public endpoint for the lb here (optional), can be changed in settings tab
+    lbEndpoint: <gui_deployment_lbEndpoint>

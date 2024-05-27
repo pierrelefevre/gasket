@@ -1,0 +1,26 @@
+{{- if .Values.gui.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.gui.name }}
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    {{- if .Values.gui.ingress.alb }}
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    {{- end }}
+spec:
+  {{- if .Values.gui.ingress.alb }}
+  ingressClassName: alb
+  {{- end }}
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.gui.name }}
+                port:
+                  number: 80
+{{- end }}

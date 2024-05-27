@@ -1,0 +1,6 @@
+# Ignore all files and directories starting with a dot
+.*
+
+# Ignore build artifacts
+target/
+build/

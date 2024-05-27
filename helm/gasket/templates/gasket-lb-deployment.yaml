@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.lb.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.lb.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.lb.name }}
+        date: "{{ now | unixEpoch }}"
+    spec:
+      volumes:
+        - name: "{{ .Values.lb.name }}-pv-mount"
+          persistentVolumeClaim:
+            claimName: {{ .Values.lb.name }}-pvc
+      containers:
+      - name: {{ .Values.lb.name }}
+        image: "{{ .Values.lb.deployment.image.repository }}:{{ .Values.lb.deployment.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+          - name: http-webserver
+            containerPort: 8888
+            protocol: TCP
+        resources: 
+          limits:
+            cpu: {{ .Values.lb.deployment.resources.limits.cpu }}
+            memory: {{ .Values.lb.deployment.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.lb.deployment.resources.requests.cpu }}
+            memory: {{ .Values.lb.deployment.resources.requests.memory }}
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: http-webserver
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webserver
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        env:
+          - name: STATE_FILE
+            value: {{ .Values.lb.deployment.env.stateFile }}
+          - name: WORKER_DISCOVERY
+            value: "{{ range $index, $node := .Values.nodes }}{{ if $index }};{{ end }}{{ $.Values.worker.name }}-{{ $node.displayName }}@{{ $node.publicIp }}{{ end }}"
+        volumeMounts:
+          - name: "{{ .Values.lb.name }}-pv-mount"
+            mountPath: {{ .Values.lb.deployment.volume.mountPath }}
