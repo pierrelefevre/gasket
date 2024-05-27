@@ -7,7 +7,7 @@
 gasket - Hardware accelerated, cloud-native transcoder
 
 
-## [Read more on the website](https://gskt.dev)
+### [Read more on the website](https://gskt.dev)
 
 ## Overview
 Gasket is a software project aiming to simplify the process of transcoding live streams in Kubernetes. It is the result of a thesis project and is currently in the early stages of development. The project is being developed by [Pierre Le Fevre](https://github.com/pierrelefevre).
@@ -15,8 +15,8 @@ Gasket is a software project aiming to simplify the process of transcoding live 
 <img src="./docs/src/architecture-diagram.svg" alt="gasket architecture diagram" class="py-10 w-full" />
 
 ## Features
-- Supports AMD Xilinx Alveo U30 accelerators, NVIDIA GPUs, CPUs
-- React-based web interface
+- Supports AMD Alveo U30, NVIDIA GPUs (tested A2000, T4), CPU via (x264, x265)
 - Easy installation with Helm
+- React-based web interface
 
 <img src="./docs/src/screenshot.png" alt="gasket-ui" class="py-10 w-full" />
