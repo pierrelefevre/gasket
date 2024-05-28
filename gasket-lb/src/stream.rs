@@ -147,6 +147,10 @@ pub(crate) async fn log(
             let dated_log = format!("{}: {}", chrono::Utc::now().to_rfc3339(), log);
 
             output.logs.push(dated_log.clone());
+            if output.logs.len() > 100 {
+                output.logs.remove(0);
+            }
+
             if level > LogLevel::Info {
                 output.last_error = Some(dated_log.clone());
             }
