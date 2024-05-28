@@ -111,7 +111,8 @@ const WorkerCard = ({
                     </Typography>
                   </Stack>
                 )}
-                {worker.streams && (
+
+                {worker.streams ? (
                   <Stack direction="row" spacing={2} alignItems={"center"}>
                     <Iconify icon="mdi:video" />
                     <Typography variant="caption" pt={0.2}>
@@ -120,7 +121,8 @@ const WorkerCard = ({
                         (worker.streams > 1 ? "s" : "")}
                     </Typography>
                   </Stack>
-                )}
+                ) : null}
+
                 {worker.server && (
                   <Stack direction="row" spacing={2} alignItems={"center"}>
                     <Iconify icon="mdi:hammer-wrench" />
