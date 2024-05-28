@@ -49,4 +49,6 @@ export type Worker = {
   };
   status: string;
   udp_ports: number[];
+  streams?: number;
+  server?: string;
 };

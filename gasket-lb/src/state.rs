@@ -11,6 +11,12 @@ pub(crate) enum WorkerStatus {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+pub(crate) struct WorkerInfo {
+    pub server: String,
+    pub streams: u32,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub(crate) struct WorkerStats {
     pub utilization: u32,
     pub devices: Vec<u32>,
@@ -35,6 +41,8 @@ pub(crate) struct Worker {
     pub(crate) encoder: Option<Encoder>,
     pub(crate) status: WorkerStatus,
     pub(crate) stats: WorkerStats,
+    pub(crate) server: Option<String>,
+    pub(crate) streams: Option<u32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]

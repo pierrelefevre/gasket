@@ -154,6 +154,8 @@ pub(crate) async fn load_worker_discovery(state: Arc<state::App>) {
                     utilization: 0,
                     devices: vec![],
                 },
+                server: None,
+                streams: None,
             };
             workers.push(new_worker);
             discovered += 1;
@@ -165,6 +167,27 @@ pub(crate) async fn load_worker_discovery(state: Arc<state::App>) {
         discovered,
         already_exists
     );
+}
+
+pub(crate) async fn get_worker_info(state: Arc<state::App>, worker: state::Worker) {
+    let url = format!("{}://{}/", worker.protocol, worker.host);
+    let client = reqwest::Client::new();
+    let response = client.get(&url).send().await;
+    if response.is_err() {
+        return;
+    }
+
+    let worker_info: state::WorkerInfo =
+        serde_json::from_str(&response.unwrap().text().await.unwrap()).unwrap();
+
+    let mut workers = state.workers.lock().await;
+    for w in workers.iter_mut() {
+        if w.id == worker.id {
+            w.server = Some(worker_info.server);
+            w.streams = Some(worker_info.streams);
+            return;
+        }
+    }
 }
 
 pub(crate) async fn ping_worker(state: Arc<state::App>, worker: state::Worker) {
@@ -402,10 +425,9 @@ pub(crate) async fn get_worker_capabilities(state: Arc<state::App>, worker: Work
 pub(crate) async fn update_worker_status(state: Arc<state::App>) {
     let mut workers = state.workers.lock().await;
     for worker in workers.iter_mut() {
-        if worker.status == state::WorkerStatus::Configuring {
-            tokio::spawn(get_worker_capabilities(state.clone(), worker.clone()));
-        }
+        tokio::spawn(get_worker_capabilities(state.clone(), worker.clone()));
         tokio::spawn(ping_worker(state.clone(), worker.clone()));
+        tokio::spawn(get_worker_info(state.clone(), worker.clone()));
     }
 }
 

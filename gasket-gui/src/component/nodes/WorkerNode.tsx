@@ -36,7 +36,9 @@ export default memo(({ data }: WorkerNodeProps) => {
         <strong>{chopString(data.resource.host, 25)}</strong>
         <span>{data.resource.stats.utilization + "% utilization"}</span>
         <span>
-          {data.resource.codecs.join(", ") + " via " + data.resource.encoder}
+          {data.resource.codecs.join(", ") +
+            " via " +
+            (data.resource.encoder || "CPU")}
         </span>
       </div>
       <Handle type="source" position={"right"} />

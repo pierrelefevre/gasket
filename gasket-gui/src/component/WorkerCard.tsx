@@ -103,8 +103,7 @@ const WorkerCard = ({
               <>
                 {worker.codecs?.length > 0 && (
                   <Stack direction="row" spacing={2} alignItems={"center"}>
-                    <Iconify icon="mdi:video" />
-
+                    <Iconify icon="fluent:box-24-filled" />
                     <Typography variant="caption" pt={0.2}>
                       {worker.codecs.join(", ") +
                         " via " +
@@ -112,22 +111,27 @@ const WorkerCard = ({
                     </Typography>
                   </Stack>
                 )}
+                {worker.streams && (
+                  <Stack direction="row" spacing={2} alignItems={"center"}>
+                    <Iconify icon="mdi:video" />
+                    <Typography variant="caption" pt={0.2}>
+                      {worker.streams +
+                        " stream" +
+                        (worker.streams > 1 ? "s" : "")}
+                    </Typography>
+                  </Stack>
+                )}
+                {worker.server && (
+                  <Stack direction="row" spacing={2} alignItems={"center"}>
+                    <Iconify icon="mdi:hammer-wrench" />
+                    <Typography variant="caption" pt={0.2}>
+                      {worker.server}
+                    </Typography>
+                  </Stack>
+                )}
 
                 {worker.stats && (
                   <Stack direction="column" spacing={2}>
-                    {/* <Stack direction="row" spacing={2} alignItems={"center"}>
-                      <Stack direction="row" spacing={2} alignItems={"center"}>
-                        <Iconify icon="tabler:activity-heartbeat" />
-                        <Typography variant="caption" pt={0.2}>
-                          System util
-                        </Typography>
-                      </Stack>
-
-                      <CircularProgressWithLabel
-                        value={worker.stats?.utilization}
-                      />
-                    </Stack> */}
-
                     {worker.stats.devices?.length > 0 && (
                       <Stack direction="row" spacing={2} alignItems={"center"}>
                         <Iconify icon="mdi:gpu" />

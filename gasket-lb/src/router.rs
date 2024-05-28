@@ -239,6 +239,8 @@ pub(crate) async fn create_worker(
             utilization: 100,
             devices: Vec::new(),
         },
+        server: None,
+        streams: None,
     };
 
     let mut workers_list = data.workers.lock().await;
