@@ -143,9 +143,10 @@ pub(crate) async fn log(
                 }
             }
 
-            // prepent iso timestamp
+            // prepend iso timestamp
             let dated_log = format!("{}: {}", chrono::Utc::now().to_rfc3339(), log);
 
+            // cap to 100 logs (performance issues over a few thousand logs)
             output.logs.push(dated_log.clone());
             while output.logs.len() > 100 {
                 output.logs.remove(0);
