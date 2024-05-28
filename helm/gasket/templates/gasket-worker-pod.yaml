@@ -11,8 +11,10 @@ spec:
   nodeName: {{ $v.hostname }}
   hostNetwork: true
   restartPolicy: Always
+  {{- if $.Values.worker.secret }}
   imagePullSecrets:
-    - name: docker-hub-secret
+    - name: {{ $.Values.worker.secret }}
+  {{- end }}
   containers:
     - name: "{{ $.Values.worker.name }}-{{ $v.displayName }}"
       # When using GPU/CPU transcoding, use tag: latest

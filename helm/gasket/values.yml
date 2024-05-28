@@ -1,4 +1,4 @@
-# gasket helm chart values
+# gasket helm chart values template
 
 # add all nodes here
 nodes:
@@ -17,6 +17,8 @@ namespace:
 # worker pods
 worker:
   name: gasket-worker
+  # image pull secret name (if needed), needs to be in the same namespace
+  secret: <worker_secret>
 
   image:
     repository: pierrelefevreneti/gasket
