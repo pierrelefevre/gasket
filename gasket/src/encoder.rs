@@ -140,73 +140,14 @@ pub fn xilinx_stats() -> Result<state::EncoderStats, serde_xml_rs::Error> {
 
 #[derive(Debug, Deserialize, PartialEq)]
 struct NetintDevStats {
-    #[serde(rename = "NUMBER")]
-    number: u32,
-
-    #[serde(rename = "INDEX")]
-    index: u32,
-
     #[serde(rename = "LOAD")]
     load: u32,
-
-    #[serde(rename = "MODEL_LOAD")]
-    model_load: u32,
-
-    #[serde(rename = "FW_LOAD")]
-    fw_load: u32,
-
-    #[serde(rename = "INST")]
-    inst: u32,
-
-    #[serde(rename = "MAX_INST")]
-    max_inst: u32,
-
-    #[serde(rename = "MEM")]
-    mem: u32,
-
-    #[serde(rename = "CRITICAL_MEM")]
-    critical_mem: u32,
-
-    #[serde(rename = "SHARE_MEM")]
-    share_mem: u32,
-
-    #[serde(rename = "P2P_MEM")]
-    p2p_mem: u32,
-
-    #[serde(rename = "DEVICE")]
-    device: String,
-
-    #[serde(rename = "L_FL2V")]
-    l_fl2v: String,
-
-    #[serde(rename = "N_FL2V")]
-    n_fl2v: String,
-
-    #[serde(rename = "FR")]
-    fr: String,
-
-    #[serde(rename = "N_FR")]
-    n_fr: String,
-
-    #[serde(rename = "NUMA_NODE")]
-    numa_node: i32,
-
-    #[serde(rename = "PCIE_ADDR")]
-    pcie_addr: String,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
 struct NetintStats {
-    #[serde(rename = "decoders")]
-    decoders: Vec<NetintDevStats>,
     #[serde(rename = "encoders")]
     encoders: Vec<NetintDevStats>,
-    #[serde(rename = "uploaders")]
-    uploaders: Vec<NetintDevStats>,
-    #[serde(rename = "AIs")]
-    ais: Vec<NetintDevStats>,
-    #[serde(rename = "nvmes")]
-    nvmes: Vec<NetintDevStats>,
 }
 
 pub fn netint_stats() -> Result<state::EncoderStats, serde_json::Error> {

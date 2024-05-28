@@ -101,13 +101,17 @@ const WorkerCard = ({
               <LinearProgress />
             ) : (
               <>
-                <Stack direction="row" spacing={2} alignItems={"center"}>
-                  <Iconify icon="mdi:video" />
+                {worker.codecs?.length > 0 && (
+                  <Stack direction="row" spacing={2} alignItems={"center"}>
+                    <Iconify icon="mdi:video" />
 
-                  <Typography variant="caption" pt={0.2}>
-                    {worker.codecs.join(", ") + " via " + worker.encoder}
-                  </Typography>
-                </Stack>
+                    <Typography variant="caption" pt={0.2}>
+                      {worker.codecs.join(", ") +
+                        " via " +
+                        (worker.encoder || "CPU")}
+                    </Typography>
+                  </Stack>
+                )}
 
                 {worker.stats && (
                   <Stack direction="column" spacing={2}>
