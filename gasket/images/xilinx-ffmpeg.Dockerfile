@@ -80,7 +80,7 @@ WORKDIR /home/ubuntu/ffmpeg_sources/FFmpeg
 
 # Apply the patch
 # https://xilinx.github.io/video-sdk/v3.0/using_ffmpeg.html#using-the-git-patch-file
-RUN git config --global user.email "ffmpeg@gskt.dev" \
+RUN git config --global user.email "ffmpeg@gasket.pierrelf.com" \
     && git config --global user.name "gasket"
 RUN cp ~/ffmpeg_sources/video-sdk/sources/app-ffmpeg4-xma-patch/0001-Updates-to-ffmpeg-n4.4-to-support-Alveo-U30-SDK-v3.patch .  
 RUN git am 0001-Updates-to-ffmpeg-n4.4-to-support-Alveo-U30-SDK-v3.patch --ignore-whitespace --ignore-space-change
